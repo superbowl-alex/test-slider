@@ -29,7 +29,7 @@
     ELEMENTS.sliderList.insertAdjacentHTML(
       "beforeend",
       `<li class="glide__slide">
-         <img src="" data-src=${item} data-id="${index}" class="glide__image" alt="Image description" />
+         <img src="${item}" data-id="${index}" loading="lazy" class="glide__image" alt="Image description" />
        </li>`
     );
     ELEMENTS.dotsNavigation.insertAdjacentHTML(
@@ -47,16 +47,18 @@
 
   let i = 1;
 
+  // Міняє значення атрибуту loading з lazy на eager у слайдів, які знаходяться у вьюпорті + сусідній справа при монтуванні слайдера
   glide.on(["mount.after"], function () {
     const countLoadedSlides = glide.settings.perView + 1;
     loadingImages(countLoadedSlides);
   });
 
+  // Міняє значення атрибуту loading з lazy на eager у слайда, який знаходиться справа від вьюпорта при натисканні на кнопку Next
   glide.on(["run.after"], function () {
     const nextPosition = glide.index + glide.settings.perView;
     const nextSlide = document.querySelector(`img[data-id="${nextPosition}"]`);
     if (nextSlide) {
-      nextSlide.src = nextSlide.dataset.src;
+      nextSlide.loading = "eager";
     }
   });
 
@@ -67,6 +69,7 @@
     });
   }
 
+  // Міняє значення атрибуту loading з lazy на eager у всіх слайдів, який знаходиться між вьюпортом та тим, куди ми переходим при натисканні на відповідну крапку та сусідній справа
   function makeVisibleSlides(e) {
     e.preventDefault();
     const targetSlideId = +e.target.dataset.id + glide.settings.perView;
@@ -77,7 +80,7 @@
     for (let j = 0; j < pos; j++) {
       const currentSlide = document.querySelector(`img[data-id="${j}"]`);
       if (currentSlide) {
-        currentSlide.src = currentSlide.dataset.src;
+        currentSlide.loading = "eager";
       }
     }
   }
