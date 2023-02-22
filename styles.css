@@ -13,3 +13,25 @@
   display: block;
   object-fit: cover;
 }
+
+.glide__arrow {
+  margin-top: 20px;
+  height: 40px;
+  width: 60px;
+}
+
+.glide__bullets {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.glide__bullet {
+  margin: 20px auto;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

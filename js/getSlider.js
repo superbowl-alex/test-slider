@@ -2,6 +2,7 @@
   const ELEMENTS = {
     sliderWrap: document.querySelector(`[data-js="slider-wrap"]`),
     sliderList: document.querySelector(`[data-js="slider-list"]`),
+    dotsNavigation: document.querySelector(`[data-glide-el="controls[nav]"]`),
   };
   const arrayImages = [
     "https://cdn.pixabay.com/photo/2023/02/06/01/14/superb-fairywren-7770904__340.jpg",
@@ -24,18 +25,62 @@
     "https://cdn.pixabay.com/photo/2022/04/13/15/21/beach-7130484__340.jpg",
     "https://cdn.pixabay.com/photo/2022/11/16/16/56/city-7596379__340.jpg",
   ];
-  arrayImages.map((item) => {
+  arrayImages.map((item, index) => {
     ELEMENTS.sliderList.insertAdjacentHTML(
       "beforeend",
       `<li class="glide__slide">
-         <img src=${item} class="glide__image" loading="lazy" alt="Image description" />
+         <img src="" data-src=${item} data-id="${index}" class="glide__image" alt="Image description" />
        </li>`
     );
+    ELEMENTS.dotsNavigation.insertAdjacentHTML(
+      "beforeend",
+      `<button class="glide__bullet" data-id="${index}" data-glide-dir="=${index}">${index}</button>`
+    );
   });
+
   const config = {
     perView: 3,
     gap: 20,
     bound: true,
   };
-  new Glide(".glide", config).mount();
+  let glide = new Glide(".glide", config);
+
+  let i = 1;
+
+  glide.on(["mount.after"], function () {
+    const countLoadedSlides = glide.settings.perView + 1;
+    loadingImages(countLoadedSlides);
+  });
+
+  glide.on(["run.after"], function () {
+    const nextPosition = glide.index + glide.settings.perView;
+    const nextSlide = document.querySelector(`img[data-id="${nextPosition}"]`);
+    if (nextSlide) {
+      nextSlide.src = nextSlide.dataset.src;
+    }
+  });
+
+  const bullets = document.querySelectorAll(".glide__bullet");
+  if (bullets) {
+    bullets.forEach((item) => {
+      item.addEventListener("click", makeVisibleSlides);
+    });
+  }
+
+  function makeVisibleSlides(e) {
+    e.preventDefault();
+    const targetSlideId = +e.target.dataset.id + glide.settings.perView;
+    loadingImages(targetSlideId);
+  }
+
+  function loadingImages(pos) {
+    for (let j = 0; j < pos; j++) {
+      const currentSlide = document.querySelector(`img[data-id="${j}"]`);
+      if (currentSlide) {
+        currentSlide.src = currentSlide.dataset.src;
+      }
+    }
+  }
+
+  glide.mount();
 })();
