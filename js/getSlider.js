@@ -62,6 +62,7 @@
     }
   });
 
+  //На всі крапки навігації навішуються слухачі, щоб відслідковувати, в яких саме слайдів міняти значення атрибуту loading
   const bullets = document.querySelectorAll(".glide__bullet");
   if (bullets) {
     bullets.forEach((item) => {
